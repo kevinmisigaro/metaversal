@@ -13,16 +13,25 @@ function UserCard({
   userName: string;
   userId: number;
 }) {
-
-    const router = useRouter()
-    const navigateToProfile = () => router.push(`/profile/${userId}`)
+  const router = useRouter();
+  const navigateToProfile = () => router.push(`/profile/${userId}`);
 
   return (
     <div className="grid grid-cols-4 items-center px-4 py-3 border border-gray-300 rounded-lg bg-white">
-      <img src={userAvatar} className="max-w-14 rounded-full" alt="..." onClick={navigateToProfile} />
+      <img
+        src={userAvatar}
+        className="max-w-14 rounded-full"
+        alt="..."
+        onClick={navigateToProfile}
+      />
       <div className="col-span-2">
         <div className="flex flex-col items-start">
-          <p className="hover:underline font-[800] cursor-pointer" onClick={navigateToProfile}>{name}</p>
+          <p
+            className="hover:underline font-[800] cursor-pointer"
+            onClick={navigateToProfile}
+          >
+            {name}
+          </p>
           <small>@{userName}</small>
         </div>
       </div>
