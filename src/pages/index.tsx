@@ -31,7 +31,7 @@ export default function Home({
 
   return (
     <HomeLayout>
-      <h3 className="text-2xl mb-5">Suggested Posts</h3>
+      <h3 className="text-2xl mb-5 font-roboto">Suggested Posts</h3>
       <SuggestedGrid data={data} />
       <div>
         <h3 className="text-2xl font-bold">Who to follow</h3>
