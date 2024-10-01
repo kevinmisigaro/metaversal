@@ -6,6 +6,7 @@ import HomeLayout from "@/components/layouts/HomeLayout";
 import FeedLoadingIndicator from "@/components/loading/FeedLoadingIndicator";
 import UserPost from "@/components/Post";
 import { profileImgUrl } from "@/utils/constants";
+import { fetchData } from "@/utils/functions";
 import { Post, User } from "@/utils/interfaces";
 import { useEffect, useState } from "react";
 
@@ -103,19 +104,7 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
-  const fetchData = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(`Error fetching data from ${url}:`, error);
-      return null;
-    }
-  };
-
+  
   const fetchPostWithUserDetails = async (post: Post) => {
     const userData = await fetchData(`https://dummyjson.com/users/${post.userId}`);
     return userData ? { ...post, user: userData } : null;
