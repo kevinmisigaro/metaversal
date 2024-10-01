@@ -2,9 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@500,800,1000&display=swap');
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+body {
+  font-family: 'Roboto Flex', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

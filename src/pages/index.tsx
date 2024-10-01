@@ -1,17 +1,26 @@
 import HomeLayout from "@/components/layouts/HomeLayout";
 import UserPost from "@/components/Post";
+import UserCard from "@/components/UserCard";
 import { profileImgUrl } from "@/utils/constants";
-import { Post } from "@/utils/interfaces";
+import { Post, User } from "@/utils/interfaces";
 import { useEffect, useState } from "react";
 
-export default function Home({ posts }: { posts: Post[] }) {
+export default function Home({
+  posts,
+  users,
+}: {
+  posts: Post[];
+  users: User[];
+}) {
   const [data, setData] = useState<Post[]>(posts);
+  const [userData, setuserData] = useState<User[]>(users);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setData(posts);
+    setuserData(users)
     setIsLoading(false);
-  }, [posts]);
+  }, [posts, users]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,6 +43,20 @@ export default function Home({ posts }: { posts: Post[] }) {
           />
         ))}
       </div>
+      <div>
+        <h3 className="text-2xl font-bold">Who to follow</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 md:gap-x-8 my-4">
+          {userData.map((u) => (
+            <UserCard
+              key={u.id}
+              userAvatar={profileImgUrl}
+              name={`${u.firstName} ${u.lastName}`}
+              userName={u.username}
+              userId={u.id}
+            />
+          ))}
+        </div>
+      </div>
       <h3 className="text-2xl mt-8 mb-5">Recent</h3>
       <div className="grid grid-cols-1 gap-10 mb-5">
         {posts.map((p) => (
@@ -54,6 +77,11 @@ export default function Home({ posts }: { posts: Post[] }) {
 }
 
 export async function getServerSideProps() {
+  //fetch users
+  const usersList = await fetch("https://dummyjson.com/users?limit=4");
+  const usersD = await usersList.json();
+  const users = usersD.users
+  
   // Fetch all posts
   const resPosts = await fetch("https://dummyjson.com/posts?limit=2");
   const postsData = await resPosts.json();
@@ -79,6 +107,7 @@ export async function getServerSideProps() {
   return {
     props: {
       posts: postsWithUserDetails,
+      users: users,
     },
   };
 }
