@@ -1,6 +1,7 @@
 import FollowGrid from "@/components/home/FollowGrid";
 import SuggestedGrid from "@/components/home/SuggestedGrid";
 import HomeLayout from "@/components/layouts/HomeLayout";
+import FeedLoadingIndicator from "@/components/loading/FeedLoadingIndicator";
 import UserPost from "@/components/Post";
 import { profileImgUrl } from "@/utils/constants";
 import { Post, User } from "@/utils/interfaces";
@@ -25,34 +26,36 @@ export default function Home({
     setIsLoading(false);
   }, [posts, users]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <HomeLayout>
-      <h3 className="text-2xl mb-5 font-roboto">Suggested Posts</h3>
-      <SuggestedGrid data={data} />
-      <div>
-        <h3 className="text-2xl font-bold">Who to follow</h3>
-        <FollowGrid userData={userData} />
-      </div>
-      <h3 className="text-2xl mt-8 mb-5">Recent</h3>
-      <div className="grid grid-cols-1 gap-10 mb-5">
-        {recentPosts.map((p) => (
-          <UserPost
-            userId={p.user.id}
-            name={`${p.user.firstName} ${p.user.lastName}`}
-            views={p.views}
-            likes={p.reactions.likes}
-            postText={p.body}
-            shares={5}
-            userAvatar={profileImgUrl}
-            userName={p.user.username}
-            key={p.id}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <FeedLoadingIndicator />
+      ) : (
+        <>
+          <h3 className="text-2xl mb-5 font-roboto">Suggested Posts</h3>
+          <SuggestedGrid data={data} />
+          <div>
+            <h3 className="text-2xl font-bold">Who to follow</h3>
+            <FollowGrid userData={userData} />
+          </div>
+          <h3 className="text-2xl mt-8 mb-5">Recent</h3>
+          <div className="grid grid-cols-1 gap-10 mb-5">
+            {recentPosts.map((p) => (
+              <UserPost
+                userId={p.user.id}
+                name={`${p.user.firstName} ${p.user.lastName}`}
+                views={p.views}
+                likes={p.reactions.likes}
+                postText={p.body}
+                shares={5}
+                userAvatar={profileImgUrl}
+                userName={p.user.username}
+                key={p.id}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </HomeLayout>
   );
 }
