@@ -6,7 +6,7 @@ function HomeLayout({children}: {children: ReactNode}) {
     <div className='bg-[#f8fbfa] font-roboto'>
     <Header />
     <div className="max-w-2xl mx-auto">
-       <div className='py-6'>
+       <div className='px-5 md:px-0 py-6'>
        {children}
        </div>
     </div>
