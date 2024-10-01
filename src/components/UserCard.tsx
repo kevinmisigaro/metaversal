@@ -22,7 +22,7 @@ function UserCard({
       <img src={userAvatar} className="max-w-14 rounded-full" alt="..." onClick={navigateToProfile} />
       <div className="col-span-2">
         <div className="flex flex-col items-start">
-          <p className="hover:underline font-[800]" onClick={navigateToProfile}>{name}</p>
+          <p className="hover:underline font-[800] cursor-pointer" onClick={navigateToProfile}>{name}</p>
           <small>@{userName}</small>
         </div>
       </div>
