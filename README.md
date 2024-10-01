@@ -16,6 +16,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Deloyed version
+## Vercel deployment
 
 You can view the live enviroment in this [link](https://metaversal-test-two.vercel.app/) 
