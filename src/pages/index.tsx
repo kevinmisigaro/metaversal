@@ -1,3 +1,5 @@
+import PostError from "@/components/errors/PostError";
+import UserError from "@/components/errors/UserError";
 import FollowGrid from "@/components/home/FollowGrid";
 import SuggestedGrid from "@/components/home/SuggestedGrid";
 import HomeLayout from "@/components/layouts/HomeLayout";
@@ -12,19 +14,47 @@ export default function Home({
   users,
   recentPosts,
 }: {
-  posts: Post[];
-  users: User[];
-  recentPosts: Post[];
+  posts: Post[] | null;
+  users: User[] | null;
+  recentPosts: Post[] | null;
 }) {
-  const [data, setData] = useState<Post[]>(posts);
-  const [userData, setuserData] = useState<User[]>(users);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [suggestedPosts, setSuggestedPosts] = useState<Post[] | null>();
+  const [userData, setuserData] = useState<User[] | null>();
+  const [isLoading, setIsLoading] = useState<boolean | null>(true);
+  const [errors, setError] = useState({
+    recentPosts: false,
+    users: false,
+    suggestedPosts: false,
+  });
 
   useEffect(() => {
-    setData(posts);
-    setuserData(users);
+    if (recentPosts === null) {
+      setError({
+        ...errors,
+        recentPosts: true,
+      });
+    }
+
+    if (users === null) {
+      setError({
+        ...errors,
+        users: true,
+      });
+    } else {
+      setuserData(users);
+    }
+
+    if (posts === null) {
+      setError({
+        ...errors,
+        suggestedPosts: true,
+      });
+    } else {
+      setSuggestedPosts(posts);
+    }
+
     setIsLoading(false);
-  }, [posts, users]);
+  }, []);
 
   return (
     <HomeLayout>
@@ -33,26 +63,38 @@ export default function Home({
       ) : (
         <>
           <h3 className="text-2xl mb-5 font-roboto">Suggested Posts</h3>
-          <SuggestedGrid data={data} />
+          {errors.suggestedPosts ? (
+            <PostError />
+          ) : (
+            <SuggestedGrid data={suggestedPosts ?? []} />
+          )}
           <div>
             <h3 className="text-2xl font-bold">Who to follow</h3>
-            <FollowGrid userData={userData} />
+            {errors.users ? (
+              <UserError />
+            ) : (
+              <FollowGrid userData={userData ?? []} />
+            )}
           </div>
           <h3 className="text-2xl mt-8 mb-5">Recent</h3>
           <div className="grid grid-cols-1 gap-10 mb-5">
-            {recentPosts.map((p) => (
-              <UserPost
-                userId={p.user.id}
-                name={`${p.user.firstName} ${p.user.lastName}`}
-                views={p.views}
-                likes={p.reactions.likes}
-                postText={p.body}
-                shares={5}
-                userAvatar={profileImgUrl}
-                userName={p.user.username}
-                key={p.id}
-              />
-            ))}
+            {errors.recentPosts ? (
+              <PostError />
+            ) : (
+              recentPosts?.map((p) => (
+                <UserPost
+                  userId={p.user.id}
+                  name={`${p.user.firstName} ${p.user.lastName}`}
+                  views={p.views}
+                  likes={p.reactions.likes}
+                  postText={p.body}
+                  shares={5}
+                  userAvatar={profileImgUrl}
+                  userName={p.user.username}
+                  key={p.id}
+                />
+              ))
+            )}
           </div>
         </>
       )}
@@ -61,57 +103,45 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
-  //fetch users
-  const usersList = await fetch("https://dummyjson.com/users?limit=4");
-  const usersD = await usersList.json();
-  const users = usersD.users;
+  const fetchData = async (url: string) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching data from ${url}:`, error);
+      return null;
+    }
+  };
 
-  //fetch recent posts
-  const recentposts = await fetch("https://dummyjson.com/posts?limit=10");
-  const recentPostResponse = await recentposts.json();
+  const fetchPostWithUserDetails = async (post: Post) => {
+    const userData = await fetchData(`https://dummyjson.com/users/${post.userId}`);
+    return userData ? { ...post, user: userData } : null;
+  };
 
-  const recentP = recentPostResponse.posts;
+  const [usersData, recentPostsData, postsData] = await Promise.all([
+    fetchData("https://dummyjson.com/users?limit=4"),
+    fetchData("https://dummyjson.com/posts?limit=10"),
+    fetchData("https://dummyjson.com/posts?limit=2")
+  ]);
 
-  const recentPostsWithUserDetails = await Promise.all(
-    recentP.map(async (post: Post) => {
-      const resUser = await fetch(`https://dummyjson.com/users/${post.userId}`);
-      const userData = await resUser.json();
+  const users = usersData?.users || null;
+  
+  const recentPosts = recentPostsData?.posts
+    ? await Promise.all(recentPostsData.posts.map(fetchPostWithUserDetails))
+    : null;
 
-      // Combine post and user data
-      return {
-        ...post,
-        user: userData,
-      };
-    })
-  );
+  const posts = postsData?.posts
+    ? await Promise.all(postsData.posts.map(fetchPostWithUserDetails))
+    : null;
 
-  // Fetch all posts
-  const resPosts = await fetch("https://dummyjson.com/posts?limit=2");
-  const postsData = await resPosts.json();
-
-  // Get an array of posts
-  const posts = postsData.posts;
-
-  // For each post, fetch user details based on the userId in the post
-  const postsWithUserDetails = await Promise.all(
-    posts.map(async (post: Post) => {
-      const resUser = await fetch(`https://dummyjson.com/users/${post.userId}`);
-      const userData = await resUser.json();
-
-      // Combine post and user data
-      return {
-        ...post,
-        user: userData,
-      };
-    })
-  );
-
-  // Return the combined data as props
   return {
     props: {
-      posts: postsWithUserDetails,
-      users: users,
-      recentPosts: recentPostsWithUserDetails,
+      posts,
+      users,
+      recentPosts,
     },
   };
 }
