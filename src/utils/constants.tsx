@@ -1,1 +1,2 @@
 export const profileImgUrl = 'https://s3-alpha-sig.figma.com/img/1351/8607/f69ffb6b663ba07926d4631854427ff5?Expires=1728864000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=q5nLElzBqC0fcZ09Jxu5Y0U0frKts1LG2uVZVelUtDH0DVcG5chNRS5HVTg3tcmqcktNiPVOT8ADdMIw6WBjtMQw7kpI1MCbR-C6pqWJlbH5oP9-ciOpUieTr6cGZbMmBr~AKrbL3P8TOidVawmG9opDCdubVe6VPSiULAtcYN-DYbFs7qCwuDvG2PfGSK8aOiZmcSwmBZXzLIUvNVt1xbqbapZ7eXE-KVrOQDKXBT3eFR2a4Woa3BJ0jXoIqMxfduv6v4YNTbgzUIjyqyA2uRVlqBSQg5kNc95Gc9x~UKiUmWmGSrObVJqWToAkwfLoTZD20ue4p8bKEybaEos39w__'
+export const apiUrl = "https://dummyjson.com"

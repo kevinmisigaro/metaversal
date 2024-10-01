@@ -5,7 +5,7 @@ import SuggestedGrid from "@/components/home/SuggestedGrid";
 import HomeLayout from "@/components/layouts/HomeLayout";
 import FeedLoadingIndicator from "@/components/loading/FeedLoadingIndicator";
 import UserPost from "@/components/Post";
-import { profileImgUrl } from "@/utils/constants";
+import { apiUrl, profileImgUrl } from "@/utils/constants";
 import { fetchData } from "@/utils/functions";
 import { Post, User } from "@/utils/interfaces";
 import { useEffect, useState } from "react";
@@ -106,14 +106,14 @@ export default function Home({
 export async function getServerSideProps() {
   
   const fetchPostWithUserDetails = async (post: Post) => {
-    const userData = await fetchData(`https://dummyjson.com/users/${post.userId}`);
+    const userData = await fetchData(`${apiUrl}/users/${post.userId}`);
     return userData ? { ...post, user: userData } : null;
   };
 
   const [usersData, recentPostsData, postsData] = await Promise.all([
-    fetchData("https://dummyjson.com/users?limit=4"),
-    fetchData("https://dummyjson.com/posts?limit=10"),
-    fetchData("https://dummyjson.com/posts?limit=2")
+    fetchData(`${apiUrl}/users?limit=4`),
+    fetchData(`${apiUrl}/posts?limit=10`),
+    fetchData(`${apiUrl}/posts?limit=2`)
   ]);
 
   const users = usersData?.users || null;
