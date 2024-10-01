@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
-import { FaThumbsUp, FaEye, FaShare } from "react-icons/fa";
+import { FiEye } from "react-icons/fi";
+import { BsSend } from "react-icons/bs";
+import { FiThumbsUp } from "react-icons/fi";
 
 interface PostProps {
   userId: number;
@@ -51,14 +53,14 @@ function UserPost({
         </div>
       </div>
       <div className="mt-4 flex justify-start gap-x-5 border-t border-gray-300 pt-3">
-        <div className="flex flex-row items-center gap-x-2 text-sm">
-          <FaThumbsUp /> {likes}
+        <div className="flex flex-row items-center gap-x-1 text-sm">
+        <FiThumbsUp className="text-sm" /> {likes}
         </div>
-        <div className="flex flex-row items-center gap-x-2">
-          <FaShare /> {shares}
+        <div className="flex flex-row items-center gap-x-1 text-sm">
+          <BsSend className="text-sm" /> {shares}
         </div>
-        <div className="flex flex-row items-center gap-x-2">
-          <FaEye /> {views}
+        <div className="flex flex-row items-center gap-x-1 text-sm">
+        <FiEye className="text-sm" /> {views}
         </div>
       </div>
     </div>
