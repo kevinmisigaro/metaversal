@@ -24,7 +24,7 @@ function UserProfile({ user, posts }: { user: User; posts: Post[] }) {
               <div className="flex flex-row gap-x-1 items-center">
                 <LuMapPin className="text-sm" />
                 <small>
-                  {user.address.city}, {user.address.country}
+                  {user.address.state}, {user.address.country}
                 </small>
               </div>
             </div>
